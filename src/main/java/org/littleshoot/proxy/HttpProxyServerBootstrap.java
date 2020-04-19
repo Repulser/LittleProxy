@@ -3,6 +3,7 @@ package org.littleshoot.proxy;
 import org.littleshoot.proxy.impl.ThreadPoolConfiguration;
 
 import java.net.InetSocketAddress;
+import java.util.function.Supplier;
 
 /**
  * Configures and starts an {@link HttpProxyServer}. The HttpProxyServer is
@@ -291,10 +292,10 @@ public interface HttpProxyServerBootstrap {
     /**
      * All outgoing-communication of the proxy-instance is goin' to be routed via the given network-interface
      *
-     * @param inetSocketAddress to be used for outgoing communication
+     * @param inetSocketAddressSupplier to be used for outgoing communication
      */
-    HttpProxyServerBootstrap withNetworkInterface(InetSocketAddress inetSocketAddress);
-    
+    HttpProxyServerBootstrap withNetworkInterface(Supplier<InetSocketAddress> inetSocketAddressSupplier);
+
     HttpProxyServerBootstrap withMaxInitialLineLength(int maxInitialLineLength);
     
     HttpProxyServerBootstrap withMaxHeaderSize(int maxHeaderSize);

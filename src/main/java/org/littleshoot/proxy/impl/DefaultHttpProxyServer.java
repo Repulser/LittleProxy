@@ -45,6 +45,7 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 
 /**
  * <p>
@@ -100,7 +101,7 @@ public class DefaultHttpProxyServer implements HttpProxyServer {
     * The actual address to which the server is bound. May be different from the requestedAddress in some circumstances,
     * for example when the requested port is 0.
     */
-    private volatile InetSocketAddress localAddress;
+    private volatile Supplier<InetSocketAddress> localAddress;
     private volatile InetSocketAddress boundAddress;
     private final SslEngineSource sslEngineSource;
     private final boolean authenticateSslClients;
@@ -247,7 +248,7 @@ public class DefaultHttpProxyServer implements HttpProxyServer {
             HostResolver serverResolver,
             long readThrottleBytesPerSecond,
             long writeThrottleBytesPerSecond,
-            InetSocketAddress localAddress,
+            Supplier<InetSocketAddress> localAddress,
             String proxyAlias,
             int maxInitialLineLength,
             int maxHeaderSize,
@@ -339,7 +340,7 @@ public class DefaultHttpProxyServer implements HttpProxyServer {
         return serverResolver;
     }
 
-    public InetSocketAddress getLocalAddress() {
+    public Supplier<InetSocketAddress> getLocalAddress() {
         return localAddress;
     }
 
@@ -615,7 +616,7 @@ public class DefaultHttpProxyServer implements HttpProxyServer {
         private HostResolver serverResolver = new DefaultHostResolver();
         private long readThrottleBytesPerSecond;
         private long writeThrottleBytesPerSecond;
-        private InetSocketAddress localAddress;
+        private Supplier<InetSocketAddress> localAddress;
         private String proxyAlias;
         private int clientToProxyAcceptorThreads = ServerGroup.DEFAULT_INCOMING_ACCEPTOR_THREADS;
         private int clientToProxyWorkerThreads = ServerGroup.DEFAULT_INCOMING_WORKER_THREADS;
@@ -643,7 +644,7 @@ public class DefaultHttpProxyServer implements HttpProxyServer {
                 int connectTimeout, HostResolver serverResolver,
                 long readThrottleBytesPerSecond,
                 long  writeThrottleBytesPerSecond,
-                InetSocketAddress localAddress,
+                Supplier<InetSocketAddress> localAddress,
                 String proxyAlias,
                 int maxInitialLineLength,
                 int maxHeaderSize,
@@ -720,8 +721,8 @@ public class DefaultHttpProxyServer implements HttpProxyServer {
         }
 
         @Override
-        public HttpProxyServerBootstrap withNetworkInterface(InetSocketAddress inetSocketAddress) {
-            this.localAddress = inetSocketAddress;
+        public HttpProxyServerBootstrap withNetworkInterface(Supplier<InetSocketAddress> inetSocketAddressSupplier) {
+            this.localAddress = inetSocketAddressSupplier;
             return this;
         }
 

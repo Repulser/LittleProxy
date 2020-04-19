@@ -847,7 +847,7 @@ public class ProxyToServerConnection extends ProxyConnection<HttpResponse> {
             this.currentFilters.proxyToServerResolutionSucceeded(serverHostAndPort, this.remoteAddress);
 
 
-            this.localAddress = proxyServer.getLocalAddress();
+            this.localAddress = proxyServer.getLocalAddress().get();
         }
     }
 
