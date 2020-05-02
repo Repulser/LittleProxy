@@ -773,7 +773,7 @@ public class ProxyToServerConnection extends ProxyConnection<HttpResponse> {
             // Let the ChainedProxy know that we were unable to connect
             chainedProxy.connectionFailed(cause);
         } else {
-            LOG.info("Connection to upstream server failed", cause);
+            LOG.error("Connection to upstream server failed", cause);
         }
 
         // attempt to connect using a chained proxy, if available
