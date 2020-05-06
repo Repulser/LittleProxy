@@ -220,7 +220,7 @@ public class ProxyToServerConnection extends ProxyConnection<HttpResponse> {
         LOG.debug("Received raw response: {}", httpResponse);
 
         if (httpResponse.getDecoderResult().isFailure()) {
-            LOG.debug("Could not parse response from server. Decoder result: {}", httpResponse.getDecoderResult().toString());
+            LOG.error("Could not parse response from server. Decoder result: {}", httpResponse.getDecoderResult().toString());
 
             // create a "substitute" Bad Gateway response from the server, since we couldn't understand what the actual
             // response from the server was. set the keep-alive on the substitute response to false so the proxy closes
@@ -753,7 +753,7 @@ public class ProxyToServerConnection extends ProxyConnection<HttpResponse> {
             // unfortunately java does not expose the specific TLS alert number (112), so we have to look for the
             // unrecognized_name string in the exception's message
             if (cause.getMessage() != null && cause.getMessage().contains("unrecognized_name")) {
-                LOG.debug("Failed to connect to server due to an unrecognized_name SSL warning. Retrying connection without SNI.");
+                LOG.warn("Failed to connect to server due to an unrecognized_name SSL warning. Retrying connection without SNI.");
 
                 // disable SNI, re-setup the connection, and restart the connection flow
                 disableSni = true;
@@ -769,11 +769,11 @@ public class ProxyToServerConnection extends ProxyConnection<HttpResponse> {
         disableSni = false;
 
         if (chainedProxy != null) {
-            LOG.info("Connection to upstream server via chained proxy failed", cause);
+            LOG.error("Connection to upstream server via chained proxy failed (" + serverHostAndPort + ")", cause);
             // Let the ChainedProxy know that we were unable to connect
             chainedProxy.connectionFailed(cause);
         } else {
-            LOG.error("Connection to upstream server failed", cause);
+            LOG.error("Connection to upstream server failed (" + serverHostAndPort + ")", cause);
         }
 
         // attempt to connect using a chained proxy, if available
